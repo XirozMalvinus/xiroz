@@ -44,9 +44,7 @@ body{font-family:'Geist',sans-serif;background:#0a0014;color:#f0e6ff;overflow-x:
 }
 .logo-wrap{display:flex;align-items:center;gap:10px;}
 .logo-img{width:36px;height:36px;border-radius:10px;object-fit:cover;}
-.logo-text{font-size:18px;font-weight:700;letter-spacing:-0.03em;
-  background:linear-gradient(135deg,#fff 30%,var(--p-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-text{font-size:18px;font-weight:700;letter-spacing:-0.03em;color:#fff;} /* no gradient */
 .logo-sub{font-size:11px;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;}
 
 .nav-links{display:flex;gap:4px;}
@@ -148,14 +146,6 @@ main{padding-top:108px;}
 }
 .play-btn:hover{transform:scale(1.08);background:rgba(111,0,255,0.3);}
 
-/* ===== MARQUEE ===== */
-.marquee-wrap{overflow:hidden;padding:32px 0;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);margin-bottom:120px;}
-.marquee-track{display:flex;gap:64px;animation:marquee 35s linear infinite;width:max-content;}
-.marquee-track:hover{animation-play-state:paused;}
-@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.marquee-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;
-  letter-spacing:0.08em;text-transform:uppercase;color:rgba(155,114,204,0.35);white-space:nowrap;}
-
 /* ===== SECTION LABEL ===== */
 .section-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
@@ -179,107 +169,37 @@ main{padding-top:108px;}
 .card-title{font-size:17px;font-weight:600;color:#fff;margin-bottom:8px;}
 .card-desc{font-size:14px;line-height:1.6;color:var(--text-muted);}
 
-/* ===== FEATURE GRID ===== */
-.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
-.feat-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.feat-span2{grid-column:span 2;}
-
-/* ===== SELECTOR ===== */
-.selector-wrap{
-  display:flex;background:var(--surface);border:1px solid var(--border);
-  border-radius:999px;padding:4px;gap:2px;width:fit-content;margin-bottom:48px;
+/* ===== API KEYS SECTION ===== */
+.api-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:40px;
+  max-width:800px;
+  margin:0 auto;
 }
-.sel-btn{
-  font-size:13px;font-weight:500;padding:8px 20px;border-radius:999px;
-  background:transparent;border:none;color:var(--text-muted);cursor:pointer;
-  transition:all 0.25s;white-space:nowrap;
+.api-key-display{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px 20px;
+  font-family:monospace;
+  font-size:14px;
+  color:var(--p-light);
+  word-break:break-all;
+  margin:16px 0;
 }
-.sel-btn.active{
+.btn-generate{
+  padding:12px 32px;
+  border-radius:999px;
   background:linear-gradient(135deg,var(--p-deep),var(--p-mid));
-  color:#fff;box-shadow:0 2px 12px rgba(111,0,255,0.4);
+  color:#fff;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
 }
-
-/* ===== AGENT CARD ===== */
-.agent-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:24px;padding:32px;min-height:400px;
-  display:flex;flex-direction:column;position:relative;overflow:hidden;
-}
-.agent-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;}
-.agent-chat-bubble{
-  background:rgba(111,0,255,0.15);backdrop-filter:blur(12px);
-  border:1px solid rgba(111,0,255,0.3);border-radius:16px;
-  padding:12px 16px;font-size:13px;color:#e0c8ff;
-  max-width:260px;
-}
-.agent-chat-bubble.right{
-  align-self:flex-end;
-  background:rgba(233,179,251,0.1);border-color:var(--border2);
-}
-
-/* ===== CTA SECTION ===== */
-.cta-section{
-  max-width:1200px;margin:0 auto 120px;padding:0 24px;text-align:center;
-}
-.cta-box{
-  background:linear-gradient(135deg,rgba(59,3,112,0.6) 0%,rgba(111,0,255,0.3) 50%,rgba(233,179,251,0.1) 100%);
-  border:1px solid var(--border);border-radius:32px;padding:80px 48px;
-  position:relative;overflow:hidden;
-}
-.cta-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
-
-/* ===== FOOTER ===== */
-footer{
-  border-top:1px solid var(--border2);padding:40px 24px;
-  max-width:1200px;margin:0 auto;
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;
-}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
-.footer-link{font-size:13px;color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
-.footer-link:hover{color:var(--p-light);}
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  height:72px;
-  background:rgba(10,0,20,0.85);
-  backdrop-filter:blur(24px);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 16px;
-}
-.nav-item{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  flex:1;padding:8px 0;cursor:pointer;
-  text-decoration:none;
-  position:relative;transition:all 0.3s;
-}
-.nav-item-icon{
-  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
-  border-radius:10px;transition:all 0.3s;
-}
-.nav-item-label{font-size:10px;font-weight:600;letter-spacing:0.05em;color:var(--text-muted);transition:all 0.3s;}
-.nav-item.active .nav-item-icon{
-  background:linear-gradient(135deg,rgba(59,3,112,0.8),rgba(111,0,255,0.6));
-  box-shadow:0 4px 16px rgba(111,0,255,0.4);
-}
-.nav-item.active .nav-item-label{color:var(--p-light);}
-.nav-item.active svg{color:var(--p-light);}
-.nav-item svg{color:var(--text-muted);transition:all 0.3s;}
-.nav-item.active svg path,.nav-item.active svg rect,.nav-item.active svg circle,.nav-item.active svg polyline{stroke:var(--p-light);}
-
-/* Ink transition indicator */
-.nav-indicator{
-  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-  width:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--p-mid),transparent);
-  border-radius:999px;transition:width 0.4s cubic-bezier(0.34,1.56,0.64,1);
-}
-.nav-item.active .nav-indicator{width:32px;}
-
-/* Page sections */
-.page{display:none;}
-.page.active{display:block;}
+.btn-generate:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(111,0,255,0.4);}
 
 /* ===== AI CHAT PAGE ===== */
 .chat-container{
@@ -375,11 +295,9 @@ footer{
 /* ===== MOBILE HIDE NAV LINKS ===== */
 @media(max-width:768px){
   .nav-links,.desktop-only{display:none;}
-  .feat-grid{grid-template-columns:1fr;}
-  .feat-grid-3{grid-template-columns:1fr;}
-  .feat-span2{grid-column:span 1;}
   .hero-grid{grid-template-columns:1fr;}
   .hero-visual{min-height:280px;}
+  .api-card{padding:20px;}
 }
 </style>
 </head>
@@ -411,9 +329,9 @@ footer{
 <section class="section" style="padding-bottom:80px;">
   <div class="hero-grid">
     <div>
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        Now Live — Xiroz v2.0
+      <!-- Dashboard badge, no gradient, centered -->
+      <div style="display:flex;justify-content:center;margin-bottom:28px;">
+        <span style="font-size:14px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);padding:8px 24px;border-radius:999px;border:1px solid var(--border);">Dashboard</span>
       </div>
       <h1 class="hero-title">Making digital<br>experiences<br>sound human</h1>
       <p class="hero-sub">Platform AI-powered untuk audio, voice synthesis, dan intelligent agents. Satu ekosistem, infinite kemungkinan.</p>
@@ -436,7 +354,7 @@ footer{
       <div style="position:relative;z-index:2;width:88%;background:rgba(255,255,255,0.06);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(233,179,251,0.6);margin-bottom:4px;">Neural Engine v4.2</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(233,179,251,0.6);margin-bottom:4px;">Xiroz Project V1</div>
             <div style="font-size:13px;font-weight:600;color:#fff;">Real-time Synthesis Active</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;background:rgba(34,197,94,0.12);padding:6px 14px;border-radius:999px;border:1px solid rgba(34,197,94,0.25);">
@@ -459,245 +377,65 @@ footer{
           <div class="wave-bar" style="--min:25%;--max:65%;--dur:0.7s;"></div>
           <div class="wave-bar" style="--min:10%;--max:40%;--dur:0.9s;"></div>
         </div>
-        <!-- Metrics -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);">
+        <!-- Metrics: Latency + IP (Confidence & Stability removed) -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);">
           <div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;">Latency</div>
             <div style="font-size:22px;font-weight:800;color:#fff;line-height:1;">24<span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:2px;">ms</span></div>
           </div>
           <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;">Confidence</div>
-            <div style="font-size:22px;font-weight:800;color:#fff;line-height:1;">99.8<span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:2px;">%</span></div>
-          </div>
-          <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;">Stability</div>
-            <div style="font-size:22px;font-weight:800;color:#fff;line-height:1;">0.02<span style="font-size:11px;font-weight:400;color:var(--text-muted);margin-left:2px;">jitter</span></div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;">IP</div>
+            <div style="font-size:22px;font-weight:800;color:#fff;line-height:1;">192.168.1.1</div>
           </div>
         </div>
-        <!-- Controls -->
+        <!-- Controls: only play button, time replaced with real-time clock -->
         <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);">
           <div style="display:flex;align-items:center;gap:16px;">
-            <button style="background:none;border:none;cursor:pointer;color:rgba(155,114,204,0.6);padding:0;display:flex;align-items:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
-            </button>
+            <!-- Previous and Next buttons removed -->
             <button style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--p-deep),var(--p-mid));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             </button>
-            <button style="background:none;border:none;cursor:pointer;color:rgba(155,114,204,0.6);padding:0;display:flex;align-items:center;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
-            </button>
           </div>
-          <div style="font-family:monospace;font-size:12px;font-weight:700;background:rgba(255,255,255,0.08);padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);color:#e0c8ff;">00:42.12</div>
+          <div id="clock-display" style="font-family:monospace;font-size:13px;font-weight:700;background:rgba(255,255,255,0.08);padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);color:#e0c8ff;">--:-- WIB</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div style="display:flex;overflow:hidden;">
-    <div class="marquee-track">
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Velocity
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        Nexus
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-        Lumina
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-        Stack
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        Quanta
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="12" x2="9" y2="12"></line><line x1="15" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="9"></line><line x1="12" y1="15" x2="12" y2="21"></line></svg>
-        Orbital
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        Scalar
-      </div>
-      <!-- duplicate for loop -->
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Velocity
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        Nexus
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-        Lumina
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-        Stack
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        Quanta
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><line x1="3" y1="12" x2="9" y2="12"></line><line x1="15" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="9"></line><line x1="12" y1="15" x2="12" y2="21"></line></svg>
-        Orbital
-      </div>
-      <div class="marquee-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        Scalar
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PLATFORM OVERVIEW -->
+<!-- ===== API KEYS SECTION (replaces marquee + platform overview) ===== -->
 <section class="section">
-  <div style="text-align:center;max-width:640px;margin:0 auto 64px;">
+  <div style="text-align:center;max-width:640px;margin:0 auto 48px;">
     <div class="section-eyebrow" style="justify-content:center;">
       <div class="eyebrow-line"></div>
-      Platform Overview
+      Xiroz API Keys
       <div class="eyebrow-line"></div>
     </div>
-    <h2 style="font-size:clamp(36px,5vw,56px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;background:linear-gradient(135deg,#fff 30%,var(--p-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;">Two systems, one shared intelligence layer</h2>
-    <p style="font-size:16px;line-height:1.7;color:var(--text-muted);">Bangun audio experiences yang scalable dengan AI pipeline yang terintegrasi penuh.</p>
+    <h2 style="font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;color:#fff;margin-bottom:16px;">Akses model AI dengan token</h2>
+    <p style="font-size:16px;color:var(--text-muted);">Generate API token untuk integrasi dengan aplikasi Anda.</p>
   </div>
 
-  <!-- Selector -->
-  <div style="display:flex;justify-content:center;margin-bottom:48px;">
-    <div class="selector-wrap">
-      <button class="sel-btn active" onclick="switchSelector(this,'panel-studio')">Xiroz Studio</button>
-      <button class="sel-btn" onclick="switchSelector(this,'panel-agents')">Xiroz Agents</button>
-      <button class="sel-btn" onclick="switchSelector(this,'panel-api')">Xiroz API</button>
+  <div class="api-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;">Token Akses</div>
+        <div style="font-size:12px;color:var(--text-muted);">Gunakan token ini untuk autentikasi ke endpoint /api/modelai</div>
+      </div>
+      <button class="btn-generate" onclick="generateToken()">Generate Token</button>
     </div>
-  </div>
-
-  <!-- Selector panels -->
-  <div id="panel-studio">
-    <div class="feat-grid" style="margin-bottom:16px;">
-      <div class="card feat-span2" style="min-height:260px;background:linear-gradient(135deg,rgba(59,3,112,0.4),rgba(111,0,255,0.15));">
-        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:auto;">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-          </div>
-          <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);">Core Feature</div>
-        </div>
-        <div style="margin-top:48px;">
-          <div class="card-title" style="font-size:22px;">Soft Editor UI</div>
-          <div class="card-desc">Edit, arrange, dan export audio dengan interface yang intuitif dan powerful. Multi-track, real-time preview, dan AI-assisted mixing.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        </div>
-        <div class="card-title">Transcript Panel</div>
-        <div class="card-desc">Auto-generated transcripts dengan word-level timestamps dan speaker diarization.</div>
-      </div>
-    </div>
-    <div class="feat-grid-3">
-      <div class="card" style="align-items:center;text-align:center;">
-        <div class="card-icon" style="margin:0 auto 12px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-        </div>
-        <div class="card-title" style="font-size:14px;">Music</div>
-      </div>
-      <div class="card" style="align-items:center;text-align:center;">
-        <div class="card-icon" style="margin:0 auto 12px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        </div>
-        <div class="card-title" style="font-size:14px;">SFX</div>
-      </div>
-      <div class="card" style="align-items:center;text-align:center;">
-        <div class="card-icon" style="margin:0 auto 12px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        </div>
-        <div class="card-title" style="font-size:14px;">Voice Cloning</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="panel-agents" style="display:none;">
-    <div class="feat-grid">
-      <div class="agent-card">
-        <div class="agent-orb" style="width:200px;height:200px;background:radial-gradient(circle,rgba(111,0,255,0.4),transparent);top:-60px;left:-60px;"></div>
-        <div class="agent-orb" style="width:150px;height:150px;background:radial-gradient(circle,rgba(233,179,251,0.3),transparent);bottom:-40px;right:-40px;"></div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--p-light);width:fit-content;margin-bottom:auto;position:relative;z-index:1;">Omnichannel Agents</div>
-        <div style="display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;margin-top:auto;">
-          <div style="display:flex;gap:12px;align-items:flex-end;">
-            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p-deep),var(--p-mid));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-            </div>
-            <div class="agent-chat-bubble">Halo! Bagaimana saya bisa membantu Anda hari ini?</div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:flex-end;flex-direction:row-reverse;">
-            <div style="width:32px;height:32px;border-radius:50%;background:rgba(233,179,251,0.15);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            </div>
-            <div class="agent-chat-bubble right">Cek status deployment saya dong.</div>
-          </div>
-        </div>
-      </div>
-      <div class="agent-card">
-        <div class="agent-orb" style="width:200px;height:200px;background:radial-gradient(circle,rgba(233,179,251,0.25),transparent);top:-40px;right:-40px;"></div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--p-light);width:fit-content;margin-bottom:auto;position:relative;z-index:1;">Analytics</div>
-        <div style="display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 8px;opacity:0.6;margin:auto 0;">
-          <div style="flex:1;background:var(--surface2);border-radius:4px 4px 0 0;height:30%;"></div>
-          <div style="flex:1;background:var(--surface2);border-radius:4px 4px 0 0;height:55%;"></div>
-          <div style="flex:1;background:linear-gradient(to top,rgba(111,0,255,0.4),var(--p-mid));border-radius:4px 4px 0 0;height:85%;"></div>
-          <div style="flex:1;background:var(--surface2);border-radius:4px 4px 0 0;height:62%;"></div>
-          <div style="flex:1;background:var(--surface2);border-radius:4px 4px 0 0;height:42%;"></div>
-        </div>
-        <div style="background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;position:relative;z-index:1;">
-          <div class="card-title" style="margin-bottom:6px;">Deep Insights</div>
-          <div class="card-desc">Analytics real-time dengan AI-powered anomaly detection dan forecasting.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="panel-api" style="display:none;">
-    <div class="feat-grid-3">
-      <div class="card">
-        <div class="card-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-        </div>
-        <div class="card-title">REST API</div>
-        <div class="card-desc">Full RESTful endpoints dengan dokumentasi lengkap dan SDK untuk semua bahasa pemrograman populer.</div>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
-        </div>
-        <div class="card-title">Streaming</div>
-        <div class="card-desc">Real-time audio streaming dengan latency ultra-rendah. WebSocket dan SSE support.</div>
-      </div>
-      <div class="card">
-        <div class="card-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p-light)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        </div>
-        <div class="card-title">Auth & Security</div>
-        <div class="card-desc">OAuth 2.0, API key management, rate limiting, dan audit logs untuk keamanan enterprise-grade.</div>
-      </div>
-    </div>
-    <div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;font-family:monospace;font-size:13px;line-height:1.8;overflow-x:auto;">
-      <div style="color:var(--text-muted);margin-bottom:8px;">// Quick start</div>
-      <div><span style="color:#e9b3fb;">const</span> <span style="color:#a5f3fc;">xiroz</span> = <span style="color:#e9b3fb;">new</span> <span style="color:#f0e6ff;">XirozClient</span>({</div>
-      <div style="padding-left:20px;"><span style="color:#86efac;">apiKey</span>: <span style="color:#fca5a5;">'xz_sk_••••••••••••'</span>,</div>
-      <div style="padding-left:20px;"><span style="color:#86efac;">region</span>: <span style="color:#fca5a5;">'ap-southeast-1'</span></div>
-      <div>});</div>
+    <div id="token-display" class="api-key-display" style="color:var(--text-muted);">Klik tombol untuk generate token</div>
+    <div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;font-family:monospace;font-size:13px;line-height:1.8;overflow-x:auto;">
+      <div style="color:var(--text-muted);margin-bottom:8px;">// Contoh penggunaan API</div>
+      <div><span style="color:#e9b3fb;">curl</span> -X POST https://api.xiroz.dev/v1/modelai \</div>
+      <div style="padding-left:16px;">-H <span style="color:#fca5a5;">"Authorization: Bearer xz_sk_••••••••••••"</span> \</div>
+      <div style="padding-left:16px;">-H <span style="color:#fca5a5;">"Content-Type: application/json"</span> \</div>
+      <div style="padding-left:16px;">-d <span style="color:#fca5a5;">'{"prompt":"Halo, ini Xiroz!"}'</span></div>
       <br>
-      <div><span style="color:#e9b3fb;">const</span> <span style="color:#a5f3fc;">audio</span> = <span style="color:#e9b3fb;">await</span> xiroz.tts.generate({</div>
-      <div style="padding-left:20px;"><span style="color:#86efac;">text</span>: <span style="color:#fca5a5;">'Halo, ini Xiroz!'</span>,</div>
-      <div style="padding-left:20px;"><span style="color:#86efac;">voice</span>: <span style="color:#fca5a5;">'nova-id'</span></div>
+      <div><span style="color:#e9b3fb;">// JavaScript (fetch)</span></div>
+      <div><span style="color:#e9b3fb;">const</span> res = <span style="color:#e9b3fb;">await</span> fetch(<span style="color:#fca5a5;">'https://api.xiroz.dev/v1/modelai'</span>, {</div>
+      <div style="padding-left:20px;"><span style="color:#86efac;">method</span>: <span style="color:#fca5a5;">'POST'</span>,</div>
+      <div style="padding-left:20px;"><span style="color:#86efac;">headers</span>: { <span style="color:#86efac;">'Authorization'</span>: <span style="color:#fca5a5;">'Bearer xz_sk_••••••••••••'</span>, <span style="color:#86efac;">'Content-Type'</span>: <span style="color:#fca5a5;">'application/json'</span> },</div>
+      <div style="padding-left:20px;"><span style="color:#86efac;">body</span>: <span style="color:#e9b3fb;">JSON</span>.stringify({ <span style="color:#86efac;">prompt</span>: <span style="color:#fca5a5;">'Halo, ini Xiroz!'</span> })</div>
       <div>});</div>
     </div>
   </div>
@@ -705,7 +443,7 @@ footer{
 
 <!-- STATS -->
 <section class="section" style="padding-top:0;">
-  <div class="feat-grid-3">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
     <div class="stat-box">
       <div class="stat-num">99.9%</div>
       <div class="stat-label">Uptime SLA</div>
@@ -741,7 +479,7 @@ footer{
 <footer>
   <div style="display:flex;align-items:center;gap:12px;">
     <img src="https://files.catbox.moe/fggc96.jpg" alt="Xiroz" style="width:28px;height:28px;border-radius:8px;">
-    <span style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#fff,var(--p-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Xiroz Project</span>
+    <span style="font-size:16px;font-weight:700;color:#fff;">Xiroz Project</span>
     <span style="font-size:12px;color:var(--text-muted);">© 2025</span>
   </div>
   <div class="footer-links">
@@ -761,7 +499,7 @@ footer{
   <div style="padding:24px 0 16px;">
     <div class="section-eyebrow">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      AI Chat
+      AI Chat — Model: Free
     </div>
     <h1 style="font-size:28px;font-weight:700;letter-spacing:-0.02em;color:#fff;">Tanya apa saja</h1>
     <p style="font-size:14px;color:var(--text-muted);margin-top:4px;">Powered by Xiroz Neural Engine v4.2</p>
@@ -997,7 +735,6 @@ function showPage(id){
   const target=document.getElementById(id);
   if(target){
     target.style.display='block';
-    // small delay for transition
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{target.classList.add('active');});
     });
@@ -1018,25 +755,29 @@ document.querySelectorAll('.page').forEach(p=>{
   if(!p.classList.contains('active'))p.style.display='none';
 });
 
-// ===== SELECTOR SWITCH =====
-function switchSelector(btn,panelId){
-  document.querySelectorAll('.selector-wrap .sel-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  ['panel-studio','panel-agents','panel-api'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.style.display='none';
-  });
-  const panel=document.getElementById(panelId);
-  if(panel){
-    panel.style.display='block';
-    panel.style.opacity='0';panel.style.transform='translateY(8px)';
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        panel.style.transition='opacity 0.35s ease,transform 0.35s ease';
-        panel.style.opacity='1';panel.style.transform='translateY(0)';
-      });
-    });
+// ===== REAL-TIME CLOCK =====
+function updateClock() {
+  const now = new Date();
+  const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false };
+  const timeStr = now.toLocaleTimeString('id-ID', options);
+  // get timezone abbreviation
+  const tz = Intl.DateTimeFormat('id-ID', { timeZoneName: 'short' }).format(now);
+  const tzAbbr = tz.split(' ').pop() || 'WIB';
+  document.getElementById('clock-display').textContent = timeStr + ' ' + tzAbbr;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===== GENERATE API TOKEN =====
+function generateToken() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let token = 'xz_sk_';
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
   }
+  const display = document.getElementById('token-display');
+  display.textContent = token;
+  display.style.color = '#e9b3fb';
 }
 
 // ===== PROMPT FILTER =====
@@ -1054,7 +795,6 @@ function filterPrompts(cat,btn){
 
 // ===== USE PROMPT =====
 function usePrompt(card){
-  const title=card.querySelector('.prompt-title').textContent;
   const desc=card.querySelector('.prompt-desc').textContent;
   showPage('page-chat');
   setNavActive('nav-chat');
@@ -1080,11 +820,12 @@ async function sendChat(){
   const typingEl=appendTyping();
 
   try{
+    // Using a free/cheap model: claude-3-haiku-20240307
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
+        model:'claude-3-haiku-20240307',
         max_tokens:1000,
         system:'Kamu adalah asisten AI bernama Xiroz, bagian dari platform Xiroz Project — platform AI-powered untuk audio synthesis, voice cloning, dan intelligent agents. Jawab dengan ramah, singkat, dan informatif dalam Bahasa Indonesia. Jangan sebut Claude atau Anthropic.',
         messages:chatMessages
